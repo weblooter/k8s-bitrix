@@ -1,0 +1,4 @@
+## create structure
+```
+public/
+```
