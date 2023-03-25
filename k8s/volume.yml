@@ -13,7 +13,7 @@ spec:
   capacity: 
     storage: 10Gi
   hostPath: 
-    path: /Storage/WebServer/geozemservis.com/public/www
+    path: /Storage/WebServer/geozemservis.com/public
 ---
 apiVersion: v1
 kind: PersistentVolumeClaim

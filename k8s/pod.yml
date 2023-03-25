@@ -20,7 +20,30 @@ spec:
         - name: geozemservis-data
           mountPath: /var/log/nginx
           subPath: .data/logs/nginx
+        - name: nginx-php-stream
+          mountPath: /etc/nginx/conf.d/
+    - name: workspace
+      image: localhost:32000/geozemservis_workspace:latest
+      volumeMounts:
+        - name: geozemservis-data
+          mountPath: /var/www/html
+          subPath: www
+    - name: mysql
+      image: localhost:32000/geozemservis_mysql:latest
+      env:
+        - name: MYSQL_ROOT_PASSWORD
+          value: KkW9rtNM1fdf3k3LWbCh
+      volumeMounts:
+        - name: geozemservis-data
+          mountPath: /var/lib/mysql
+          subPath: .data/mysql
   volumes:
     - name: geozemservis-data
       persistentVolumeClaim: 
         claimName: geozemservis-pvc
+    - name: nginx-php-stream
+      configMap: 
+        name: geozemservis-nginx
+        items:
+          - key: nginx-php-stream
+            path: php-upstream.conf
