@@ -3,30 +3,35 @@ services:
     build: 
       context: workspace
       args:
-        - PUID=1000
-        - PGID=1000
+        - PUID=${USER_ID}
+        - PGID=${GROUP_ID}
+        - TZ=${WORKSPACE_TIMEZONE}
     ports:
-      - "2202:22"
+      - "${SSH_PORT}:22"
     volumes:
       - ../public:/var/www/html
-      - ./workspace/config/php.ini:/usr/local/etc/php/php.ini
   nginx:
-    image: nginx:latest
+    build: 
+      context: nginx
+      args:
+        - TZ=${WORKSPACE_TIMEZONE}
     ports:
-      - "8080:80"
+      - "${NGINX_PORT}:80"
     volumes:
       - ../public:/var/www/html
-      - ./nginx/default.conf:/etc/nginx/conf.d/default.conf
-      - ./nginx/nginx.conf:/etc/nginx/nginx.conf
+      - ./.data/logs/nginx:/var/log/nginx
     depends_on:
       - workspace
   mysql:
-    image: mysql:8.0.32
+    build: 
+      context: mysql
+      args:
+        - TZ=${MYSQL_TIMEZONE}
     restart: always
+    environment:
+      - MYSQL_ROOT_PASSWORD=${MYSQL_ROOT_PASSWORD}
     ports:
-      - "3306:3306"
-    environment: 
-      - MYSQL_ROOT_PASSWORD=root
+      - "${MYSQL_PORT}:3306"
     volumes:
-      - ./mysql/my.cnf:/etc/mysql/conf.d/my.cnf
       - ./.data/mysql/:/var/lib/mysql
+      - ./mysql/docker-entrypoint-initdb.d:/docker-entrypoint-initdb.d

@@ -1,0 +1,13 @@
+# this sql script will auto run when the mysql container starts and the $DATA_PATH_HOST/mysql not found.
+#
+# if your $DATA_PATH_HOST/mysql exists and you do not want to delete it, you can run by manual execution:
+#
+#     docker-compose exec mysql bash
+#     mysql -u root -p < /docker-entrypoint-initdb.d/createdb.sql
+#
+
+CREATE DATABASE `dbname` COLLATE 'utf8mb4_unicode_ci';
+CREATE USER 'username'@'%' IDENTIFIED BY 'EFtJp6pTqi3cvW5yXqpG';
+GRANT ALL PRIVILEGES ON dbname.* TO 'username'@'%' WITH GRANT OPTION;
+
+FLUSH PRIVILEGES;

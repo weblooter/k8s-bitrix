@@ -2,6 +2,8 @@
 ```
 .data/
   mysql/
+  logs/
+    nginx/
 ```
 and set access
 ```

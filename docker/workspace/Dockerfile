@@ -10,7 +10,12 @@ RUN apt-get update && apt-get install -y \
 	&& docker-php-ext-install -j$(nproc) gd \
 	&& docker-php-ext-install mysqli
 
-EXPOSE 22
+COPY config/php.ini /usr/local/etc/php/php.ini
+
+ARG PUID=1000
+ENV PUID ${PUID}
+ARG PGID=1000
+ENV PGID ${PGID}
 
 RUN apt-get install openssh-server mc nano cron -y
 RUN mkdir /var/run/sshd
@@ -20,13 +25,12 @@ RUN mkdir /root/.ssh \
 COPY ./ssh/root-ssh.pub /root/.ssh/authorized_keys
 RUN chmod 600 /root/.ssh/authorized_keys
 
-ARG PUID=1000
-ENV PUID ${PUID}
-ARG PGID=1000
-ENV PGID ${PGID}
+RUN groupadd -g $PUID workspace && \
+    useradd workspace -u $PUID -g $PGID -m -s /bin/bash 
 
-RUN groupadd -g ${PGID} workspace && \
-    useradd workspace -u ${PUID} -g ${PGID} -m -s /bin/bash 
+ARG TZ=UTC
+ENV TZ ${TZ}
+RUN ln -snf /usr/share/zoneinfo/$TZ /etc/localtime && echo $TZ > /etc/timezone
 
 RUN mkdir /home/workspace/.ssh \
 	&& chmod 700 /home/workspace/.ssh
@@ -47,10 +51,11 @@ pm.max_spare_servers = 3\n" ${PUID} ${PGID} > /usr/local/etc/php-fpm.d/www.conf
 COPY ./crontab /etc/cron.d
 RUN chmod -R 644 /etc/cron.d
 RUN crontab /etc/cron.d/workspace
-	
+
 RUN printf "/usr/sbin/cron\n \
 php-fpm -D\n \
 /usr/sbin/sshd -D\n" >> /start.sh
 RUN chmod +x /start.sh
 
+EXPOSE 22
 CMD ["/start.sh"]
