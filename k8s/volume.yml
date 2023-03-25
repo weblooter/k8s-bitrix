@@ -1,0 +1,34 @@
+apiVersion: v1
+kind: PersistentVolume
+metadata:
+  name: geozemservis-pv
+  namespace: geozemservis
+  labels:
+    app: geozemservis
+spec:
+  storageClassName: geozemservis
+  accessModes: 
+    - ReadWriteOnce
+  persistentVolumeReclaimPolicy: Retain
+  capacity: 
+    storage: 10Gi
+  hostPath: 
+    path: /Storage/WebServer/geozemservis.com/public/www
+---
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: geozemservis-pvc
+  namespace: geozemservis
+  labels:
+    app: geozemservis
+spec:
+  storageClassName: geozemservis
+  accessModes: 
+    - ReadWriteOnce
+  selector: 
+    matchLabels:
+      app: geozemservis
+  resources: 
+    requests:
+      storage: 10Gi

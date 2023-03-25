@@ -9,7 +9,7 @@ services:
     ports:
       - "${SSH_PORT}:22"
     volumes:
-      - ../public:/var/www/html
+      - ../public/www:/var/www/html
   nginx:
     build: 
       context: nginx
@@ -18,7 +18,7 @@ services:
     ports:
       - "${NGINX_PORT}:80"
     volumes:
-      - ../public:/var/www/html
+      - ../public/www:/var/www/html
       - ./.data/logs/nginx:/var/log/nginx
     depends_on:
       - workspace
@@ -34,4 +34,3 @@ services:
       - "${MYSQL_PORT}:3306"
     volumes:
       - ./.data/mysql/:/var/lib/mysql
-      - ./mysql/docker-entrypoint-initdb.d:/docker-entrypoint-initdb.d

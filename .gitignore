@@ -1,5 +1,8 @@
-/public
+/public/.data
+/public/www
+
 /docker/.env
 /docker/.data
 /docker/mysql/docker-entrypoint-initdb.d/createdb.sql
+
 /k8s/.data
