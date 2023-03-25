@@ -23,7 +23,9 @@ RUN crontab /etc/cron.d/logrotate
 
 # user
 ARG PUID=1000
+ENV PUID ${PUID}
 ARG PGID=1000
+ENV PGID ${PGID}
 
 RUN groupadd -g $PUID workspace && \
     useradd workspace -u $PUID -g $PGID -m -s /bin/bash 

@@ -5,7 +5,7 @@ public/
     www/
 ```
 
-После создания для .data назначить пара 777, для www - 644.
+После создания для .data назначить пара 777, для www - 755.
 
 ## build
 После выполнения `docker-compose build` в `bocker/` формируются изображения по формату  `#COMPOSE_PROJECT_NAME#_#service-name#:latest`, т.е. если COMPOSE_PROJECT_NAME=test, то будет сформировано 3 изображения:
@@ -13,4 +13,6 @@ public/
 - test_workspace:latest
 - test_mysql:latest
 
-Как итог для работы кубера необходимо будет подключиться к этим изображениям.
+Но хранилище докера отлично от хранилища кубера, поэтому надо поднять локальный регистр. Читай [https://microk8s.io/docs/registry-private](https://microk8s.io/docs/registry-private) .
+
+Если ты используешь microk8s то он поднимается через `microk8s enable registry`, а так следуй мануалу.
