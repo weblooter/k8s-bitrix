@@ -1,0 +1,29 @@
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata: 
+  name: geozemservis
+  namespace: geozemservis
+  labels:
+    app: geozemservis
+spec:
+  rules:
+    - host: geozemservis.ru.local
+      http: 
+        paths:
+          - path: /
+            pathType: Prefix
+            backend: 
+              service:
+                name: http
+                port: 
+                  name: http
+    - host: geozemservis.com.local
+      http: 
+        paths:
+          - path: /
+            pathType: Prefix
+            backend: 
+              service:
+                name: http
+                port: 
+                  name: http

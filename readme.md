@@ -5,7 +5,7 @@ public/
     www/
 ```
 
-После создания для .data назначить пара 777, для www - 755.
+После создания для .data назначить права 777, для www - 755.
 
 ## build
 После выполнения `docker-compose build` в `bocker/` формируются изображения по формату  `#COMPOSE_PROJECT_NAME#_#service-name#:latest`, т.е. если COMPOSE_PROJECT_NAME=test, то будет сформировано 3 изображения:
@@ -18,3 +18,10 @@ public/
 Если ты используешь microk8s то он поднимается через `microk8s enable registry`, а так следуй мануалу.
 
 Как только хранилище будет настроено можно воспользоваться `docker/build.sh` для сборки и отправки изображений.
+
+
+# TODO
+- разбить pod на workspace & mysql
+- сделать deployment и лимиты
+- перенести пароль базы ROOT в секрет или .env файл
+- подключить heml
