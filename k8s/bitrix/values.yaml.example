@@ -1,0 +1,55 @@
+# main
+projectName: local
+labels:
+  env: stage
+
+# pv
+volume:
+  hostPath: /mnt/storage/local.com/public
+  storage: 10Gi
+
+# limits
+limits: 
+  common:
+    min:
+      cpu: 0.2
+      memory: 100Mi
+    max:
+      cpu: 2
+      memory: 1Gi
+    default:
+      cpu: 0.2
+      memory: 256Mi
+  workspace:
+    requests:
+      cpu: 0.25
+      memory: 256Mi
+    limits:
+      cpu: 0.5
+      memory: 512Mi
+  mysql:
+    requests:
+      cpu: 1
+      memory: 512Mi
+    limits:
+      cpu: 2
+      memory: 1G
+
+# deploy
+deployment:
+  workspace:
+    replicas: 2
+  mysql:
+    rootPassword: root
+
+# ingress
+ingress:
+  hosts:
+    - host: local.ru
+      paths: 
+        - path: "/"
+          pathType: Prefix
+    - host: local.com
+      paths: 
+        - path: "/"
+          pathType: Prefix

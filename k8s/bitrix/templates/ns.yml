@@ -1,0 +1,28 @@
+apiVersion: v1
+kind: Namespace
+metadata:
+  name: {{ .Values.projectName | quote }}
+  labels:
+    app: {{ .Values.projectName | quote }}
+    env: {{ .Values.labels.env | quote }}
+---
+apiVersion: v1
+kind: LimitRange
+metadata:
+  name: {{ .Values.projectName | quote }}
+  namespace: {{ .Values.projectName | quote }}
+  labels:
+    app: {{ .Values.projectName | quote }}
+    env: {{ .Values.labels.env | quote }}
+spec:
+  limits:
+    - min:
+        cpu: {{ .Values.limits.common.min.cpu }}
+        memory: {{ .Values.limits.common.min.memory | quote }}
+      max:
+        cpu: {{ .Values.limits.common.max.cpu }}
+        memory: {{ .Values.limits.common.max.memory | quote }}
+      default:
+        cpu: {{ .Values.limits.common.default.cpu }}
+        memory: {{ .Values.limits.common.default.memory | quote }}
+      type: Container

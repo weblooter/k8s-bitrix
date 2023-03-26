@@ -1,0 +1,118 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: workspace
+  namespace: {{ .Values.projectName | quote }}
+  labels:
+    app: {{ .Values.projectName | quote }}
+    env: {{ .Values.labels.env | quote }}
+spec:
+  replicas: {{ int .Values.deployment.workspace.replicas }}
+  selector:
+    matchLabels:
+      app: {{ .Values.projectName | quote }}
+      pod: workspace
+      env: {{ .Values.labels.env | quote }}
+  template:
+    metadata:
+      name: workspace
+      namespace: {{ .Values.projectName | quote }}
+      labels:
+        app: {{ .Values.projectName | quote }}
+        pod: workspace
+        env: {{ .Values.labels.env | quote }}
+    spec:
+      containers:
+        - name: nginx
+          image: {{ printf "localhost:32000/%s_nginx:latest" .Values.projectName }}
+          ports:
+            - name: http
+              containerPort: 80
+          volumeMounts:
+            - name: {{ printf "%s-data" .Values.projectName }}
+              mountPath: /var/www/html
+              subPath: www
+            - name: {{ printf "%s-data" .Values.projectName }}
+              mountPath: /var/log/nginx
+              subPath: .data/logs/nginx
+            - name: nginx-php-stream
+              mountPath: /etc/nginx/conf.d/
+          resources:
+            requests:
+              cpu: {{ .Values.limits.workspace.requests.cpu }}
+              memory: {{ .Values.limits.workspace.requests.memory | quote }}
+            limits:
+              cpu: {{ .Values.limits.workspace.limits.cpu }}
+              memory: {{ .Values.limits.workspace.limits.memory | quote }}
+        - name: workspace
+          image: localhost:32000/{{ .Values.projectName }}_workspace:latest
+          volumeMounts:
+            - name: {{ printf "%s-data" .Values.projectName }}
+              mountPath: /var/www/html
+              subPath: www
+            - name: {{ printf "%s-data" .Values.projectName }}
+              mountPath: /tmp/php-session
+              subPath: .data/php-session
+          lifecycle:
+            postStart:
+              exec:
+                command: ["/bin/sh", "-c", "chmod 777 /tmp/php-session"]
+      volumes:
+        - name: {{ printf "%s-data" .Values.projectName }}
+          persistentVolumeClaim:
+            claimName: {{ printf "%s-pvc" .Values.projectName }}
+        - name: nginx-php-stream
+          configMap:
+            name: {{ printf "%s-nginx" .Values.projectName }}
+            items:
+              - key: nginx-php-stream
+                path: php-upstream.conf
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: mysql
+  namespace: {{ .Values.projectName | quote }}
+  labels:
+    app: {{ .Values.projectName | quote }}
+    env: {{ .Values.labels.env | quote }}
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: {{ .Values.projectName | quote }}
+      pod: mysql
+      env: {{ .Values.labels.env | quote }}
+  template:
+    metadata:
+      name: mysql
+      namespace: {{ .Values.projectName | quote }}
+      labels:
+        app: {{ .Values.projectName | quote }}
+        pod: mysql
+        env: {{ .Values.labels.env | quote }}
+    spec:
+      containers:
+        - name: mysql
+          image: {{ printf "localhost:32000/%s_mysql:latest" .Values.projectName }}
+          ports:
+            - name: mysql
+              containerPort: 3306
+          env:
+            - name: MYSQL_ROOT_PASSWORD
+              value: {{ .Values.deployment.mysql.rootPassword | quote }}
+          volumeMounts:
+            - name: {{ printf "%s-data" .Values.projectName }}
+              mountPath: /var/lib/mysql
+              subPath: .data/mysql
+          resources:
+            requests:
+              cpu: {{ .Values.limits.mysql.requests.cpu }}
+              memory: {{ .Values.limits.mysql.requests.memory | quote }}
+            limits:
+              cpu: {{ .Values.limits.mysql.limits.cpu }}
+              memory: {{ .Values.limits.mysql.limits.memory | quote }}
+      volumes:
+        - name: {{ printf "%s-data" .Values.projectName }}
+          persistentVolumeClaim:
+            claimName: {{ printf "%s-pvc" .Values.projectName }}

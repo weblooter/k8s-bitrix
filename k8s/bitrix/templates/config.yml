@@ -1,0 +1,14 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: {{ printf "%s-nginx" .Values.projectName }}
+  namespace: {{ .Values.projectName | quote }}
+  labels:
+    app: {{ .Values.projectName | quote }}
+    env: {{ .Values.labels.env | quote }}
+data: 
+  nginx-php-stream: |
+    upstream php-upstream { 
+        server 127.0.0.1:9000; 
+    }
+immutable: true

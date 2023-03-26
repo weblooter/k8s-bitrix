@@ -7,4 +7,4 @@
 /docker/.data
 /docker/mysql/docker-entrypoint-initdb.d/createdb.sql
 
-/k8s/.data
+/k8s/bitrix/values.yaml

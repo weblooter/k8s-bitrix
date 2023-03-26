@@ -2,13 +2,15 @@ apiVersion: v1
 kind: Service
 metadata:
   name: http
-  namespace: geozemservis
+  namespace: {{ .Values.projectName | quote }}
   labels:
-    app: geozemservis
+    app: {{ .Values.projectName | quote }}
+    env: {{ .Values.labels.env | quote }}
 spec:
   selector:
-    app: geozemservis
+    app: {{ .Values.projectName | quote }}
     pod: workspace
+    env: {{ .Values.labels.env | quote }}
   type: NodePort
   sessionAffinity: ClientIP
   ports: 
@@ -20,12 +22,13 @@ apiVersion: v1
 kind: Service
 metadata:
   name: mysql
-  namespace: geozemservis
+  namespace: {{ .Values.projectName | quote }}
   labels:
-    app: geozemservis
+    app: {{ .Values.projectName | quote }}
+    env: {{ .Values.labels.env | quote }}
 spec:
   selector:
-    app: geozemservis
+    app: {{ .Values.projectName | quote }}
     pod: mysql
   type: ClusterIP
   ports: 
