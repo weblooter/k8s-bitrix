@@ -21,7 +21,5 @@ public/
 
 
 # TODO
-- разбить pod на workspace & mysql
-- сделать deployment и лимиты
 - перенести пароль базы ROOT в секрет или .env файл
 - подключить heml
