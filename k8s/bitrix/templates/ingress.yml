@@ -17,8 +17,8 @@ spec:
             pathType: {{ .pathType | quote }}
             backend: 
               service:
-                name: http
+                name: {{ .serviceName | quote }}
                 port: 
-                  name: http
+                  name: {{ .portName | quote }}
           {{- end }}
     {{- end }}

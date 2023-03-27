@@ -49,7 +49,11 @@ ingress:
       paths: 
         - path: "/"
           pathType: Prefix
+          serviceName: http
+          portName: http
     - host: local.com
       paths: 
         - path: "/"
           pathType: Prefix
+          serviceName: http
+          portName: http

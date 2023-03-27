@@ -46,6 +46,9 @@ spec:
               memory: {{ .Values.limits.workspace.limits.memory | quote }}
         - name: workspace
           image: localhost:32000/{{ .Values.projectName }}_workspace:latest
+          ports:
+            - name: ssh
+              containerPort: 22
           volumeMounts:
             - name: {{ printf "%s-data" .Values.projectName }}
               mountPath: /var/www/html

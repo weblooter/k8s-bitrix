@@ -21,6 +21,26 @@ spec:
 apiVersion: v1
 kind: Service
 metadata:
+  name: ssh
+  namespace: {{ .Values.projectName | quote }}
+  labels:
+    app: {{ .Values.projectName | quote }}
+    env: {{ .Values.labels.env | quote }}
+spec:
+  selector:
+    app: {{ .Values.projectName | quote }}
+    pod: workspace
+    env: {{ .Values.labels.env | quote }}
+  type: NodePort
+  sessionAffinity: ClientIP
+  ports: 
+    - name: ssh
+      port: 2202
+      targetPort: ssh
+---
+apiVersion: v1
+kind: Service
+metadata:
   name: mysql
   namespace: {{ .Values.projectName | quote }}
   labels:

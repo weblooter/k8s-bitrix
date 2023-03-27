@@ -8,3 +8,4 @@
 /docker/mysql/docker-entrypoint-initdb.d/createdb.sql
 
 /k8s/bitrix/values.yaml
+/k8s/bitrix/values.yml
